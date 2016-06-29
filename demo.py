@@ -8,7 +8,7 @@ user = "sword"
 pw = "sword"
 
 def main():
-    logging.basicConfig() # NSA is watchinh
+    logging.basicConfig() # NSA is watching
     c = Connection(SD_URI, user_name=user, user_pass=pw)
 
     #import ipdb; ipdb.set_trace()
