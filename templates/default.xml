@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:hal="http://hal.archives-ouvertes.fr/">
+    <text>
+        <body>
+            <listBibl>
+                <biblFull>
+                    <titleStmt>
+                        <title xml:lang="en">{{ title }}</title>
+                        {% for author in authors %}
+                        <author role="aut">
+                            <persName>
+                                <forename type="first">{{ first }}</forename>
+                                <surname>{{ last }}</surname>
+                            </persName>
+                            <idno type="idhal"></idno>
+                            <affiliation ref="#struct-1"/>
+                        </author>
+                        {% endfor %}
+                    </titleStmt>
+                    <sourceDesc>
+                        <biblStruct>
+                            <analytic>
+                                <title xml:lang="en">{{ title }}</title>
+                                {% for author in authors %}
+                                <author role="rsp">
+                                    <persName>
+                                        <forename type="first">{ first }</forename>
+                                        <surname>{ last }</surname>
+                                    </persName>
+                                    <idno type="idhal"></idno>
+                                    <affiliation ref="#struct-1"/>
+                                </author>
+                                {% endfor %}
+                            </analytic>
+                            <monogr>
+                                <idno type="localRef">LKB-FLQ</idno>
+                                <idno type="halJournalId">2872</idno>
+                                <imprint>
+                                    <biblScope unit="volume">69</biblScope>
+                                    <biblScope unit="pp">655 - 701</biblScope>
+                                    <date type="datePub">2001</date>
+                                </imprint>
+                            </monogr>
+                            <idno type="doi">{{ doi }}</idno>
+                        </biblStruct>
+                    </sourceDesc>
+                </biblFull>
+            </listBibl>
+        </body>
+    </text>
+</TEI>
