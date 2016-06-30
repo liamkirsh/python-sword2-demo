@@ -14,14 +14,15 @@ def main():
     #import ipdb; ipdb.set_trace()
 
     c.get_service_document()
-    assert c.sd != None
-    assert c.sd.parsed
-    assert c.sd.valid
+    assert c.sd != None and c.sd.parsed and c.sd.valid
 
     print len(c.workspaces)
-
+    print "workspaces", c.workspaces
+    print "workspace 1 collections", c.workspaces[0][0]
     workspace_1_title, workspace_1_collections = c.workspaces[0]
     collection = workspace_1_collections[0]
+
+    return
 
     #print collection # get a human-readable report for it
 
