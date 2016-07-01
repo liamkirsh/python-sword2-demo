@@ -9,14 +9,21 @@
                         {% for author in authors %}
                         <author role="aut">
                             <persName>
-                                <forename type="first">{{ first }}</forename>
-                                <surname>{{ last }}</surname>
+                                <forename type="first">{{ author.first }}</forename>
+                                <surname>{{ author.last }}</surname>
                             </persName>
                             <idno type="idhal"></idno>
-                            <affiliation ref="#struct-1"/>
+                            <!-- <affiliation ref="#struct-1"/> -->
                         </author>
-                        {% endfor %}
-                    </titleStmt>
+                    {% endfor %}</titleStmt>
+                    <publicationStmt>
+                        <idno type="halRefHtml">
+                            <i>{{ publication.name }}</i>, {{ publication.year }}, {{ publication.volume }} ({{ publication.issue }}), pp.{{ publication.pp }}
+                        </idno>
+                        <idno type="halRef">
+                            {{ publication.name }}, {{ publication.year }}, {{ publication.volume }} ({{ publication.issue }}), pp.{{ publication.pp }}
+                        </idno>
+                    </publicationStmt>
                     <sourceDesc>
                         <biblStruct>
                             <analytic>
@@ -24,21 +31,19 @@
                                 {% for author in authors %}
                                 <author role="rsp">
                                     <persName>
-                                        <forename type="first">{ first }</forename>
-                                        <surname>{ last }</surname>
+                                        <forename type="first">{{ author.first }}</forename>
+                                        <surname>{{ author.last }}</surname>
                                     </persName>
                                     <idno type="idhal"></idno>
-                                    <affiliation ref="#struct-1"/>
+                                    <!-- <affiliation ref="#struct-1"/> -->
                                 </author>
-                                {% endfor %}
-                            </analytic>
+                            {% endfor %}</analytic>
                             <monogr>
-                                <idno type="localRef">LKB-FLQ</idno>
-                                <idno type="halJournalId">2872</idno>
+                                <title level="j">{{ publication.name }}</title>
                                 <imprint>
-                                    <biblScope unit="volume">69</biblScope>
-                                    <biblScope unit="pp">655 - 701</biblScope>
-                                    <date type="datePub">2001</date>
+                                    <biblScope unit="volume">{{ publication.volume }}</biblScope>
+                                    <biblScope unit="issue">{{ publication.issue }}</biblScope>
+                                    <biblScope unit="pp">{{ publication.pp }}></biblScope>
                                 </imprint>
                             </monogr>
                             <idno type="doi">{{ doi }}</idno>
