@@ -13,7 +13,7 @@
                                 <surname>{{ author.last }}</surname>
                             </persName>
                             <idno type="idhal"></idno>
-                            <!-- <affiliation ref="#struct-1"/> -->
+                            <affiliation ref="#struct-{{ author.affiliationId }}"/>
                         </author>
                     {% endfor %}</titleStmt>
                     <publicationStmt>
@@ -34,7 +34,7 @@
                                         <forename type="first">{{ author.first }}</forename>
                                         <surname>{{ author.last }}</surname>
                                     </persName>
-                                    <idno type="idhal"></idno>
+                                    <idno type="idhal">{{ author.halid }}</idno>
                                     <!-- <affiliation ref="#struct-1"/> -->
                                 </author>
                             {% endfor %}</analytic>
@@ -52,5 +52,19 @@
                 </biblFull>
             </listBibl>
         </body>
+        <back>
+            <listOrg type="structures">
+                {% for structure in structures %}
+                <org type="{{ structure.type }}" xml:id="struct-{{ structure.id }}" status="VALID">
+                    <orgName>{{ structure.name }}</orgName>
+                    <desc>
+                        <address>
+                            <addrLine>{{ structure.address.text }}</addrLine>
+                            <country key="{{ structure.address.country }}"/>
+                        </address>
+                    </desc>
+                </org>
+            {% endfor %}</listOrg>
+        </back>
     </text>
 </TEI>
