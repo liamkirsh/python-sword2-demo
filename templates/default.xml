@@ -53,14 +53,13 @@
         <back>
             <listOrg type="structures">{% for structure in structures %}
                 <org type="{{ structure.type }}" xml:id="struct-{{ structure.recid }}" status="VALID">
-                    <orgName>{{ structure.id }}</orgName>
-                    <desc>{% if structure.address %}<address>
-                            <!--<addrLine>{{ structure.address.text }}</addrLine>
-                            <country key="{{ structure.address.country }}"/>-->
+                    <orgName>{{ structure.name }}</orgName>
+                    <desc><address>
+                            {% for addrLine in structure.address %}<addrLine>{{ addrLine }}</addrLine>
+                            {% endfor %}<country key="{{ structure.country }}"/>
                         </address>
-                {% endif %}</desc>
-                </org>
-            {% endfor %}</listOrg>
+                </desc>
+                </org>{% endfor %}</listOrg>
         </back>
     </text>
 </TEI>
