@@ -59,7 +59,8 @@
                             {% endfor %}<country key="{{ structure.country }}"/>
                         </address>
                 </desc>
-                </org>{% endfor %}</listOrg>
+                </org>{% endfor %}
+             </listOrg>
         </back>
     </text>
 </TEI>
