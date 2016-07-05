@@ -58,7 +58,7 @@
                             {% for addrLine in structure.address %}<addrLine>{{ addrLine }}</addrLine>
                             {% endfor %}<country key="{{ structure.country }}"/>
                         </address>
-                </desc>
+                    </desc>
                 </org>{% endfor %}
              </listOrg>
         </back>
