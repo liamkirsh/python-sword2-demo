@@ -6,61 +6,108 @@
                 <biblFull>
                     <titleStmt>
                         <title xml:lang="en">{{ title }}</title>
-                        {% for author in authors %}<author role="aut">
+                        {% for author in authors %}
+                        <author role="aut">
                             <persName>
                                 <forename type="first">{{ author.first }}</forename>
                                 <surname>{{ author.last }}</surname>
                             </persName>
                             <idno type="idhal"></idno>
+                            {% if author.affiliation_id != "" %}
                             <affiliation ref="#struct-{{ author.affiliation_id }}"/>
+                            {% endif %}
                         </author>
-                    {% endfor %}</titleStmt>
+                        {% endfor %}
+                    </titleStmt>
+                    {% if publication != None %}
                     <publicationStmt>
+                        {% if publication.type == "journal" %}
                         <idno type="halRefHtml">
-                            <i>{{ publication.name }}</i>, {{ publication.year }}, {{ publication.volume }} ({{ publication.issue }}), pp.{{ publication.pp }}
+                            <i>{{ publication.name }}</i>, {{ publication.year }}, {{ publication.volume }}{% if publication.issue != "" %} ({{ publication.issue }}){% endif %}, pp.{{ publication.pp }}
                         </idno>
                         <idno type="halRef">
-                            {{ publication.name }}, {{ publication.year }}, {{ publication.volume }} ({{ publication.issue }}), pp.{{ publication.pp }}
+                            {{ publication.name }}, {{ publication.year }}, {{ publication.volume }}{% if publication.issue != "" %} ({{ publication.issue }}){% endif %}, pp.{{ publication.pp }}
                         </idno>
+                        {% endif %}
+                        {% if publication.type == "conference" %}
+                        <idno type="halRefHtml">
+                            <i>{{ publication.name }} ({{ publication.acronym }})</i>, {{ publication.month }} {{ publication.year }}, {{ publication.city }}, {{ publication.country }}.
+                        </idno>
+                        <idno type="halRef">
+                            {{ publication.name }} ({{ publication.acronym }}), {{ publication.month }} {{ publication.year }}, {{ publication.city }}, {{ publication.country }}.
+                        </idno>
+                        {% endif %}
                     </publicationStmt>
+                    {% endif %}
                     <sourceDesc>
                         <biblStruct>
                             <analytic>
                                 <title xml:lang="en">{{ title }}</title>
-                                {% for author in authors %}<author role="rsp">
+                                {% for author in authors %}
+                                <author role="rsp">
                                     <persName>
                                         <forename type="first">{{ author.first }}</forename>
                                         <surname>{{ author.last }}</surname>
                                     </persName>
                                     <idno type="idhal">{{ author.halid }}</idno>
+                                    {% if author.affiliation_id != "" %}
                                     <affiliation ref="#struct-{{ author.affiliation_id }}"/>
+                                    {% endif %}
                                 </author>
-                            {% endfor %}</analytic>
+                                {% endfor %}
+                            </analytic>
+                            {% if publication != None %}
                             <monogr>
+                                {% if publication.type == "journal" %}
                                 <title level="j">{{ publication.name }}</title>
                                 <imprint>
+                                    {% if publication.volume != "" %}
                                     <biblScope unit="volume">{{ publication.volume }}</biblScope>
+                                    {% endif %}
+                                    {% if publication.issue != "" %}
                                     <biblScope unit="issue">{{ publication.issue }}</biblScope>
+                                    {% endif %}
                                     <biblScope unit="pp">{{ publication.pp }}></biblScope>
                                 </imprint>
+                                {% endif %}
+                                {% if publication.type == "conference" %}
+                                <meeting>
+                                    <title>
+                                        {{ publication.name }} ({{ publication.acronym }})
+                                    </title>
+                                    <date type="start">{{ publication.opening_date }}</date>
+                                    <date type="end">{{ publication.closing_date }}</date>
+                                    <settlement>{{ publication.city }}</settlement>
+                                    <country key="{{ publication.country_code }}">{{ publication.country }}</country>
+                                </meeting>
+                                {% endif %}
                             </monogr>
+                            {% endif %}
+                            {% if doi is defined %}
                             <idno type="doi">{{ doi }}</idno>
+                            {% endif %}
                         </biblStruct>
                     </sourceDesc>
                 </biblFull>
             </listBibl>
         </body>
+        {% if structures|length > 0 %}
         <back>
-            <listOrg type="structures">{% for structure in structures %}
+            <listOrg type="structures">
+            {% for structure in structures %}
                 <org type="{{ structure.type }}" xml:id="struct-{{ structure.recid }}" status="VALID">
                     <orgName>{{ structure.name }}</orgName>
                     <desc><address>
-                            {% for addrLine in structure.address %}<addrLine>{{ addrLine }}</addrLine>
-                            {% endfor %}<country key="{{ structure.country }}"/>
+                            {% for addrLine in structure.address %}
+                            <addrLine>{{ addrLine }}</addrLine>
+                            {% endfor %}
+                            <country key="{{ structure.country }}"/>
                         </address>
                     </desc>
-                </org>{% endfor %}
+                </org>
+                {% endfor %}
              </listOrg>
         </back>
+        {% endif %}
     </text>
 </TEI>
