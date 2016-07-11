@@ -5,9 +5,18 @@
             <listBibl>
                 <biblFull>
                     <titleStmt>
-                        <title xml:lang="en">{{ title }}</title>
+                        {% for title in titles %}
+                        {%+ if title.title is defined %}<title xml:lang="en">{{ title.title }}</title>
+                        {% endif %}
+                        {% if title.subtitle is defined %}<title type="sub" xml:lang="en">{{ title.subtitle }}</title>
+                        {% endif %}
+                        {% endfor %}
                         {% for author in authors %}
+                        {% if author.role is defined and author.role == "Editor" %}
+                        <author role="edt">
+                        {% else %}
                         <author role="aut">
+                        {% endif %}
                             <persName>
                                 <forename type="first">{{ author.first }}</forename>
                                 <surname>{{ author.last }}</surname>
@@ -19,7 +28,7 @@
                         </author>
                         {% endfor %}
                     </titleStmt>
-                    {% if publication != None %}
+                    {% if publication is not none %}
                     <publicationStmt>
                         {% if publication.type == "journal" %}
                         <idno type="halRefHtml">
@@ -42,7 +51,9 @@
                     <sourceDesc>
                         <biblStruct>
                             <analytic>
+                                {% for title in titles %}
                                 <title xml:lang="en">{{ title }}</title>
+                                {% endfor %}
                                 {% for author in authors %}
                                 <author role="rsp">
                                     <persName>
@@ -56,7 +67,7 @@
                                 </author>
                                 {% endfor %}
                             </analytic>
-                            {% if publication != None %}
+                            {% if publication is not none %}
                             <monogr>
                                 {% if publication.type == "journal" %}
                                 <title level="j">{{ publication.name }}</title>
@@ -83,7 +94,7 @@
                                 {% endif %}
                             </monogr>
                             {% endif %}
-                            {% if doi is defined %}
+                            {% if doi != "" %}
                             <idno type="doi">{{ doi }}</idno>
                             {% endif %}
                         </biblStruct>
@@ -97,7 +108,8 @@
             {% for structure in structures %}
                 <org type="{{ structure.type }}" xml:id="struct-{{ structure.recid }}" status="VALID">
                     <orgName>{{ structure.name }}</orgName>
-                    <desc><address>
+                    <desc>
+                        <address>
                             {% for addrLine in structure.address %}
                             <addrLine>{{ addrLine }}</addrLine>
                             {% endfor %}

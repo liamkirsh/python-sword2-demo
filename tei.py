@@ -6,6 +6,7 @@ import json
 TEMPLATE = 'default.xml'
 #from inspirehep.utils.record_getter import get_es_record
 from inspirehep.modules.records.json_ref_loader import replace_refs
+from inspirehep.modules.authors.utils import scan_author_string_for_phrases
 import sys
 
 
@@ -15,13 +16,15 @@ def tei_response(record):
     env = Environment(loader=PackageLoader('inspirehep.modules.converttohal',
                                            'templates'), trim_blocks=True, lstrip_blocks=True)
     template = env.get_template(TEMPLATE)
-    #sys.stderr.write(str(data['authors'][0]['affiliations'][0]['recid']) + '\n')
     #import ipdb; ipdb.set_trace()
 
-    if 'authors' in data:
-        authors = []
-        for author in data['authors']:
+    authors = []
+    for author in data['authors']:
+        if 'full_name' in author and author['full_name']:
             # handle first/last name
+            parsed = scan_author_string_for_phrases(author['full_name'])
+            author['parsed_name'] = parsed
+            '''
             auth_spl = author['full_name'].split(",")
             if len(auth_spl) == 2:
                 last = auth_spl[0].strip()
@@ -32,14 +35,14 @@ def tei_response(record):
 
             authors.append({'last': last,
                             'first': first,
-                            'affiliation_id': author['affiliations'][0]['recid']
-                                if 'recid' in author['affiliations'][0]
+                            'affiliation_id': (author['affiliations'][0]
+                                    ['recid'])
+                                if 'affiliations' in author
+                                and 'recid' in author['affiliations'][0]
                                 else ""
-                           })
-    else:
-        authors = []
+                           })'''
 
-    title = data['titles'][0]['title']
+    titles = data.get('titles', [])
 
     # TODO: update the following line
     doi = data['dois'][0]['value'] if 'dois' in data else ""
@@ -76,12 +79,11 @@ def tei_response(record):
     my_affiliations = []
     recids = []
     structures = []
-    if 'authors' in data:
-        for author in data['authors']:
-            for affiliation in author['affiliations']:
-                if 'recid' in affiliation and affiliation['recid'] not in recids:
-                    my_affiliations.append(affiliation)
-                    recids.append(affiliation['recid'])
+    for author in (data.get('authors') or []):
+        for affiliation in (author.get('affiliations') or []):
+            if 'recid' in affiliation and affiliation['recid'] not in recids:
+                my_affiliations.append(affiliation)
+                recids.append(affiliation['recid'])
     for affiliation in my_affiliations:
         ref = replace_refs(affiliation, 'db')
 
@@ -90,9 +92,7 @@ def tei_response(record):
         #sys.stderr.write(str(ref['record']) + '\n')
         #sys.stderr.write(str(ref['record']['collections']) + '\n')
         #sys.stderr.write(str(ref['record']['collections'][1]['primary']) + '\n\n')
-        if (ref['record']
-                and 'collections' in ref['record']
-                and ref['record']['collections']):
+        if ('record' in ref and 'collections' in ref['record']):
             structures.append({'type': ref['record']['collections'][1]['primary'].lower()
                                    if len(ref['record']['collections']) >= 2 else "",
                                'name': ref['record']['institution'][0],
@@ -101,7 +101,7 @@ def tei_response(record):
                                'recid': ref['record']['oai_pmh'][0]['id'].split(":")[-1]
                               })
 
-    print template.render(title=title, doi=doi, authors=authors,
+    print template.render(titles=titles, doi=doi, authors=authors,
                           publication=publication, structures=structures)
 
 def _conference_data(conf_record):
