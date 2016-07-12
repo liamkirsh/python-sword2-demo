@@ -6,7 +6,8 @@ import json
 TEMPLATE = 'default.xml'
 #from inspirehep.utils.record_getter import get_es_record
 from inspirehep.modules.records.json_ref_loader import replace_refs
-from inspirehep.modules.authors.utils import scan_author_string_for_phrases
+#from inspirehep.modules.authors.utils import scan_author_string_for_phrases
+from nameparser import HumanName
 import sys
 
 
@@ -18,12 +19,22 @@ def tei_response(record):
     template = env.get_template(TEMPLATE)
     #import ipdb; ipdb.set_trace()
 
-    authors = []
+    authors = data['authors']
     for author in data['authors']:
         if 'full_name' in author and author['full_name']:
             # handle first/last name
-            parsed = scan_author_string_for_phrases(author['full_name'])
+            #scan = scan_author_string_for_phrases(author['full_name'])
+            #parsed = parse_scanned_author_for_phrases(scan)
+            #author['parsed_name'] = parsed
+            
+            parsed = HumanName(author['full_name'])
             author['parsed_name'] = parsed
+
+            #sys.stderr.write(str(scan) + '\n' + str(parsed) + '\n')
+            #sys.exit(0)
+            
+            
+
             '''
             auth_spl = author['full_name'].split(",")
             if len(auth_spl) == 2:
